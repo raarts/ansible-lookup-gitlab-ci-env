@@ -10,7 +10,7 @@ If for example I have two environments `production` and `staging`, all of which 
 	staging_PGDB_PASSWORD
 	production_PGDB_PASSWORD
 
-And the ansible deployment role for the production environment will - using this ansible plugin function - create the folling variables:
+And the ansible deployment role for the production environment will - using this ansible plugin function - create the following variables:
 
 	PGDB_USERNAME (from common_PGDB_USERNAME)
 	PGDB_PASSSWORD (from production_PGDB_PASSWORD)
@@ -65,4 +65,4 @@ The deployment task of the role looks like this:
 	    state: absent
 	    
 	    
-It's the environment line that does the trick. It copies environment variables from the CI environment (including everything that starts with `CI_`, and creates variables by taking them from CI variables that begin with the prefixes defined by 'ENV' and 'COMMON'.
+It's the environment line in the thrid task that does the trick. It copies all variables that start with `CI_` verbatim, then searches for variables which names start with one of the prefixes given in the 'ENV' and 'COMMON' variables, and creates new variables, removing the prefix.
