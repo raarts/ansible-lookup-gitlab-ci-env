@@ -1,6 +1,6 @@
-# Ansible plugin for setting environment variables from Gitlab CI
+# Ansible plugin for creating environment-specific values for secure variables in GitLab.
 
-*Note: GitLab is a really great product, and I really recommend companies to go for the EE version. As an individual I can not afford it though, hence this workaround.*
+*Note: GitLab is a really great product, and I wholeheartedly recommend it to companies (and if you do, go for the EE version). As an individual I can not afford it though, hence this workaround.*
 
 
 This plugin allows me to define per-environment variables in a Gitlab project CI/CD pipeline.
@@ -26,7 +26,7 @@ For the staging environment the following vars will be created:
 
 Drop this file into an ansible [lookup_plugins](http://docs.ansible.com/ansible/devel/plugins/lookup.html) folder. This will result in an ansible function `gitlab_env`. 
 
-How do I use this? I run the following from a .gitlab-ci.yml file deploy section:
+How do I use this? I run the following from a `.gitlab-ci.yml` file deploy section:
 
     variables:
       COMMON: common
@@ -35,7 +35,7 @@ How do I use this? I run the following from a .gitlab-ci.yml file deploy section
     - ansible-playbook product.yml -e env=$ENV -e token=$READ_REGISTRY_TOKEN
 
 
-This is my product.yml file: 
+This is my `product.yml` file: 
     
     - name: "Deploy the product"
       hosts: all
@@ -43,7 +43,7 @@ This is my product.yml file:
       roles:
       - { role: stack-deploy }
 
-The stack-deploy role has this plugin in the `lookup_plugins` folder.
+The `stack-deploy` role has this plugin in the `lookup_plugins` folder.
 
 The deployment task of the role looks like this:
 
@@ -51,10 +51,10 @@ The deployment task of the role looks like this:
 	  copy: src=product.yml dest=.
 	
 	- name: Login to the registry
-	  command: docker login -u gitlab -p {{ token }} registry.example.com
+	  command: docker login -u gitlab -p {{ token }}
 	
 	- name: Actually deploy the stack
-	  command: docker stack deploy -c product.yml product_{{ env }} --with-registry-auth
+	  command: docker stack deploy -c product.yml product_{{ env }}
 	  environment: "{{ lookup('gitlab_env', 'ENV', 'COMMON')|combine(item) }}"
 	  with_items:
 	    - {'SWARM': "{{ lookup('env', 'SWARM') }}" }
@@ -65,4 +65,4 @@ The deployment task of the role looks like this:
 	    state: absent
 	    
 	    
-It's the environment line that does the trick. It copies environment variables from the CI environment (including everything that starts with `CI_`, and creates variables that begin with the prefixes defined by 'ENV' and 'COMMON'.
+It's the environment line that does the trick. It copies environment variables from the CI environment (including everything that starts with `CI_`, and creates variables by taking them from CI variables that begin with the prefixes defined by 'ENV' and 'COMMON'.
