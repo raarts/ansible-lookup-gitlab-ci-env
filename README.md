@@ -2,6 +2,7 @@
 
 *Note: GitLab is a really great product, and I wholeheartedly recommend it to companies (and if you do, go for the EE version). As an individual I can not afford it though, hence this workaround.*
 
+*Note 2: As Gitlab now allows to choose the environment for each variable, this repo isn't necessary anymore. I will keep it around for posterity.
 
 This plugin allows me to define per-environment variables in a Gitlab project CI/CD pipeline.
 If for example I have two environments `production` and `staging`, all of which need their own variable `PGDB_PASSWORD`, but a common `PGDB_USERNAME`, I define the following variables in GitLab:
